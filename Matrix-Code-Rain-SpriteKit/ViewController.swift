@@ -1,36 +1,23 @@
-//
 //  ViewController.swift
 //  Matrix-Code-Rain-SpriteKit
-//
 //  Created by Holger Hinzberg on 29.08.21.
-//
 
 import Cocoa
 import SpriteKit
-import GameplayKit
 
 class ViewController: NSViewController {
 
-    @IBOutlet var skView: SKView!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        if let view = self.skView {
-            // Load the SKScene from 'GameScene.sks'
-            if let scene = SKScene(fileNamed: "GameScene") {
-                // Set the scale mode to scale to fit the window
-                scene.scaleMode = .aspectFill
-                
-                // Present the scene
-                view.presentScene(scene)
-            }
-            
-            view.ignoresSiblingOrder = true
-            
-            view.showsFPS = true
-            view.showsNodeCount = true
-        }
+        
+        let scene = MainScene(size: self.view.bounds.size)
+        scene.scaleMode = .aspectFill
+        
+        let skView = self.view as! SKView
+        skView.ignoresSiblingOrder = true
+        skView.showsFPS = true
+        skView.showsNodeCount = true
+        skView.presentScene(scene)
     }
 }
 
