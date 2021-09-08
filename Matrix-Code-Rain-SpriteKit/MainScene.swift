@@ -15,7 +15,6 @@ class MainScene: SKScene  {
     override init(size: CGSize)
     {
         super.init(size: size)
-        
         self.backgroundColor = SKColor.black
         
         let nodeSize = CGSize(width: fontSize, height: self.size.height)
