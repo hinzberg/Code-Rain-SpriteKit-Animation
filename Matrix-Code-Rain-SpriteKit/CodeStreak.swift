@@ -54,30 +54,39 @@ class CodeStreakNode: SKSpriteNode {
         let label = SKLabelNode(text: character)
         label.fontSize = fontSize
         label.fontName = "Arial"
-        label.fontColor = SKColor.green
-        label.alpha = 1
+        label.fontColor = SKColor.white
+        label.alpha = 0
         return label
     }
     
     private func createAnimation(index : Int) -> SKAction {
-        let duration = 1.2
-        // Wait depending on index position
-        let delayAction = SKAction.wait(forDuration: 0.1 * Double(index))
-        // Fade in Animation
-        //let fadeInAction = SKAction.fadeIn(withDuration: duration)
         
-        // Wait and do nothing
-        let colorAction = SKAction.colorTransitionAction(fromColor: SKColor.white, toColor: SKColor.green, duration: duration)
-                
-        // Wait and do nothing
-        let waitAction = SKAction.wait(forDuration: duration)
+        let delayDuration = 0.08
+        let fadeDuration = 0.3
+        let colorShiftDuration = 0.1
+        let stayDuration = 1.0
+        
+        // Wait and do nothing. You will fade in soon
+        let delayAction = SKAction.wait(forDuration: delayDuration * Double(index))
+        // Fade in Animation
+        let fadeInAction = SKAction.fadeIn(withDuration: fadeDuration)
+        // Shift the color from white to green
+        let colorShiftAction = SKAction.colorTransitionAction(fromColor: SKColor.white, toColor: SKColor.green, duration: colorShiftDuration)
+        // All together now
+        let introSequence = SKAction.sequence([delayAction, fadeInAction, colorShiftAction])
+
+        // Wait and do nothing. Just be there
+        let stayAction = SKAction.wait(forDuration: stayDuration)
+        
         // Fade out Animation
-        let fadeOutAction = SKAction.fadeOut(withDuration: duration)
+        let fadeOutAction = SKAction.fadeOut(withDuration: fadeDuration)
         // Remove yourself from parent view
         let doneAction = SKAction.removeFromParent()
-        // Combine all actions to a sequence
-        let sequence = SKAction.sequence([delayAction,  colorAction  , waitAction, fadeOutAction, doneAction])
-        return sequence
+        // All together now
+        let outroSequence = SKAction.sequence([fadeOutAction, doneAction])
+                
+        let lifecycleSequence = SKAction.sequence([introSequence, stayAction, outroSequence])
+        return lifecycleSequence
     }
     
     required init?(coder aDecoder: NSCoder) {
