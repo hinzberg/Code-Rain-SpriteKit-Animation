@@ -6,7 +6,7 @@ import SpriteKit
 
 class CodeStreakNode: SKSpriteNode {
     
-    public var fontSize : CGFloat = 50
+    public var fontSize : CGFloat = 20
     
     override init(texture: SKTexture?, color: NSColor, size: CGSize) {
         super.init(texture: texture, color: color, size: size)
@@ -19,16 +19,29 @@ class CodeStreakNode: SKSpriteNode {
     }
     
     private func createCharacters() {
+       
         // How many characters fit on the view?
-        let maxCharacters = Int( self.size.height / fontSize)
-        // The minimum number of characters in a streak
-        let minCharacters = maxCharacters / 2
-        // A random number between min and max
-        let randomCharacterCount = Int.random(in: minCharacters...maxCharacters)
+        var characterCount = Int( self.size.height / fontSize)
         
+        var characterOffsetTop = 0
+        var characterOffsetBotton = 0
+        
+        if  Int.random(in: 0...10) > 6  {
+            characterOffsetTop = Int.random(in: 0...characterCount / 3)
+        }
+        
+        if  Int.random(in: 0...10) > 6  {
+            characterOffsetBotton = Int.random(in: 0...characterCount / 5)
+        }
+        
+        print("Top: \(characterOffsetTop) Botton: \(characterOffsetBotton)")
+        
+        characterCount -= characterOffsetBotton
+                
         let characterGenerator = RandomCharacterGenerator()
         
-        for index in  1...randomCharacterCount {
+        let startIndex = characterOffsetTop
+        for index in  startIndex...characterCount {
             // Get a reandom character
             let character = characterGenerator.getRandomCharacter()
             // Create label node
@@ -61,17 +74,18 @@ class CodeStreakNode: SKSpriteNode {
     
     private func createAnimation(index : Int) -> SKAction {
         
-        let delayDuration = 0.08
-        let fadeDuration = 0.3
+        let delayDuration = 0.1
         let colorShiftDuration = 0.1
-        let stayDuration = 1.0
+        let fadeDuration = 0.1
+        let stayDuration = 2.0
         
         // Wait and do nothing. You will fade in soon
         let delayAction = SKAction.wait(forDuration: delayDuration * Double(index))
         // Fade in Animation
         let fadeInAction = SKAction.fadeIn(withDuration: fadeDuration)
         // Shift the color from white to green
-        let colorShiftAction = SKAction.colorTransitionAction(fromColor: SKColor.white, toColor: SKColor.green, duration: colorShiftDuration)
+        let greenTint = createRandomGreenTintColor()
+        let colorShiftAction = SKAction.colorTransitionAction(fromColor: SKColor.white, toColor: greenTint, duration: colorShiftDuration)
         // All together now
         let introSequence = SKAction.sequence([delayAction, fadeInAction, colorShiftAction])
 
@@ -89,7 +103,17 @@ class CodeStreakNode: SKSpriteNode {
         return lifecycleSequence
     }
     
+    private func createRandomGreenTintColor() -> SKColor {
+        let randomAlpha = Double.random(in: 0.5...1.0)
+        let greenTint = SKColor(red: 0, green: 1, blue: 0, alpha: randomAlpha)
+        return greenTint
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    
+    
+    
 }

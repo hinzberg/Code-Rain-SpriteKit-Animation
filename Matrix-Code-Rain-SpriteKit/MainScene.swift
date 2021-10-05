@@ -9,7 +9,7 @@ import SpriteKit
 
 class MainScene: SKScene  {
     
-    private let fontSize : CGFloat = 50
+    private let fontSize : CGFloat = 20
     private var streakNode : CodeStreakNode?
         
     override init(size: CGSize)
