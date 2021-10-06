@@ -19,29 +19,30 @@ class CodeStreakNode: SKSpriteNode {
     }
     
     private func createCharacters() {
-       
+        
         // How many characters fit on the view?
-        var characterCount = Int( self.size.height / fontSize)
+        let totalCharacterCount = Int( self.size.height / fontSize)
         
         var characterOffsetTop = 0
         var characterOffsetBotton = 0
         
-        if  Int.random(in: 0...10) > 6  {
-            characterOffsetTop = Int.random(in: 0...characterCount / 3)
+        // Is there a spacing from the top and how big is it?
+        if  Int.random(in: 0...100) < 50  {
+            characterOffsetTop = Int.random(in: 1...totalCharacterCount / 3)
         }
         
-        if  Int.random(in: 0...10) > 6  {
-            characterOffsetBotton = Int.random(in: 0...characterCount / 5)
+        // Is there a spacing from the bottom and how big is it?
+        if  Int.random(in: 0...100) < 50  {
+            characterOffsetBotton = Int.random(in: 1...totalCharacterCount / 3)
         }
         
-        print("Top: \(characterOffsetTop) Botton: \(characterOffsetBotton)")
+        // print("Top: \(characterOffsetTop) Botton: \(characterOffsetBotton)")
         
-        characterCount -= characterOffsetBotton
-                
+        let actualCharacterCount = totalCharacterCount - characterOffsetBotton
+        
         let characterGenerator = RandomCharacterGenerator()
         
-        let startIndex = characterOffsetTop
-        for index in  startIndex...characterCount {
+        for index in  characterOffsetTop..<actualCharacterCount {
             // Get a reandom character
             let character = characterGenerator.getRandomCharacter()
             // Create label node
@@ -50,7 +51,7 @@ class CodeStreakNode: SKSpriteNode {
             label.zPosition = self.zPosition + 1
             label.position = self.createPosition(index: index, fontSize: self.fontSize)
             // Get and add the animation
-            let animation = self.createAnimation(index: index)
+            let animation = self.createAnimation(index: index, totalCharacterCount: totalCharacterCount)
             label.run(animation)
             // Das to parent view
             self.addChild(label)
@@ -58,7 +59,7 @@ class CodeStreakNode: SKSpriteNode {
     }
     
     private func createPosition(index : Int, fontSize : CGFloat) -> CGPoint {
-        let yOffset = fontSize * CGFloat(index)
+        let yOffset = fontSize * CGFloat(index + 1)
         let labelPostion = CGPoint(x: 0, y: self.size.height / 2 - yOffset )
         return labelPostion
     }
@@ -72,12 +73,12 @@ class CodeStreakNode: SKSpriteNode {
         return label
     }
     
-    private func createAnimation(index : Int) -> SKAction {
+    private func createAnimation(index : Int, totalCharacterCount : Int) -> SKAction {
         
         let delayDuration = 0.1
         let colorShiftDuration = 0.1
         let fadeDuration = 0.1
-        let stayDuration = 2.0
+        let stayDuration = Double(totalCharacterCount) * 0.12 + Double.random(in: 0.3...0.5)
         
         // Wait and do nothing. You will fade in soon
         let delayAction = SKAction.wait(forDuration: delayDuration * Double(index))
@@ -88,7 +89,7 @@ class CodeStreakNode: SKSpriteNode {
         let colorShiftAction = SKAction.colorTransitionAction(fromColor: SKColor.white, toColor: greenTint, duration: colorShiftDuration)
         // All together now
         let introSequence = SKAction.sequence([delayAction, fadeInAction, colorShiftAction])
-
+        
         // Wait and do nothing. Just be there
         let stayAction = SKAction.wait(forDuration: stayDuration)
         
@@ -98,13 +99,13 @@ class CodeStreakNode: SKSpriteNode {
         let doneAction = SKAction.removeFromParent()
         // All together now
         let outroSequence = SKAction.sequence([fadeOutAction, doneAction])
-                
+        
         let lifecycleSequence = SKAction.sequence([introSequence, stayAction, outroSequence])
         return lifecycleSequence
     }
     
     private func createRandomGreenTintColor() -> SKColor {
-        let randomAlpha = Double.random(in: 0.5...1.0)
+        let randomAlpha = Double(Int.random(in:5...10)) / 10.0
         let greenTint = SKColor(red: 0, green: 1, blue: 0, alpha: randomAlpha)
         return greenTint
     }

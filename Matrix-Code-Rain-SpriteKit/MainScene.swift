@@ -10,7 +10,7 @@ import SpriteKit
 class MainScene: SKScene  {
     
     private let fontSize : CGFloat = 20
-    private var streakNode : CodeStreakNode?
+    private var streakNodes = [CodeStreakNode]()
         
     override init(size: CGSize)
     {
@@ -18,16 +18,25 @@ class MainScene: SKScene  {
         self.backgroundColor = SKColor.black
         
         let nodeSize = CGSize(width: fontSize, height: self.size.height)
-        let nodeColor = SKColor(calibratedRed: 1, green: 1, blue: 1, alpha: 0.2)
-        self.streakNode = CodeStreakNode(color: nodeColor, size: nodeSize)
-        self.streakNode?.fontSize = fontSize
-        self.streakNode!.position = CGPoint(x: self.size.width / 2 - 200, y: self.size.height / 2)
-        self.addChild(streakNode!)
+        let nodeColor = SKColor(calibratedRed: 1, green: 1, blue: 1, alpha: 0.0)
+        
+        var positionX = 150.0
+        
+        for index in 1...10 {
+            
+            let streakNode = CodeStreakNode(color: nodeColor, size: nodeSize)
+            streakNode.fontSize = fontSize
+            streakNode.position = CGPoint(x: positionX, y: self.size.height / 2)
+            addChild(streakNode)
+            streakNodes.append(streakNode)
+            
+            positionX += 20.0
+        }
     }
     
     override func update(_ currentTime: TimeInterval) {
         super.update(currentTime)
-        self.streakNode?.update()
+        streakNodes.forEach{ $0.update() }
     }
     
     required init?(coder aDecoder: NSCoder)
